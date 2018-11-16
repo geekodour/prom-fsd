@@ -1,10 +1,12 @@
 # promfilesd-cli
 Add and remove targets and labels to file_sd file for your prometheus configuration directly from the cli
 
+Should be written in python2
+
 ```
-$ promfilesd-cli file=~/ss.json targets=["gitlab0d.fsf.org"] labels={'job': 'mysql', 'category':'xyz'}
-$ promfilesd-cli --remove-targets file=~/ss.json targets=["gitlab0d.fsf.org"]
-$ promfilesd-cli --remove-labels file=~/ss.json labels=['job','category']
+$ prom-fsd file=~/ss.json targets=["gitlab0d.fsf.org"] labels={'job': 'mysql', 'category':'xyz'}
+$ prom-fsd --remove-targets file=~/ss.json targets=["gitlab0d.fsf.org"]
+$ prom-fsd --remove-labels file=~/ss.json labels=['job','category']
 ```
 
 If you want to mass add remove files you must do it separately for targents and labels
