@@ -2,7 +2,8 @@
   {
     "targets": ["10.11.150.1:7870", "10.11.150.4:7870"],
     "labels": {
-      "job": "mysql"
+      "job": "mysql",
+      "datacenter": "east"
     }
   },
   {

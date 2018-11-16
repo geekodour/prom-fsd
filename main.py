@@ -2,6 +2,7 @@ import argparse
 import json
 
 """
+usage: (currently `$ python main.py` instread of prom-fsd)
 $ prom-fsd ss.json targets=["gitlab0d.fsf.org"] labels={'job': 'mysql', 'category':'xyz'}
 $ prom-fsd ss.json --remove-targets '["gitlab0d.fsf.org"]'
 $ prom-fsd ss.json --remove-labels '{"job":"job1", "category":"cat2"}'
@@ -38,11 +39,17 @@ def validate_input(pj, rtargets, rlabels):
         if not type(pj) is list:
             raise ValueError('json object should be a list of labels to remove')
 
+"""
+Utility functions
+"""
 def merge_dicts(x, y):
     z = x.copy()
     z.update(y)
     return z
 
+"""
+prom-fsd class
+"""
 class promfsd:
     """ prom-fsd class """
     def __init__(self, filepath, pj, rtargets, rlabels):
@@ -59,7 +66,7 @@ class promfsd:
     def addtargets(self):
         indexCheck = self.checkifjobexists()
         if indexCheck is False:
-            """ add the new shit """
+            """ add the new stuff """
             targets_obj = {}
             targets_obj['targets'] = self.pj['targets']
             targets_obj['labels'] = self.pj['labels']
@@ -67,14 +74,17 @@ class promfsd:
             print self.file_data
             # write to disk
         else:
-            """ modify old shit """
+            """ modify old stuff """
             print 'index is %s' % indexCheck
-            # add the targets to the existing (merge) use set
-            # merge the labels dicts
-            # else add the new stuff
+            temp_obj = self.file_data[indexCheck]
+            temp_obj['targets'] = list(set(temp_obj['targets']+self.pj['targets']))
+            temp_obj['labels'] = merge_dicts(temp_obj['labels'],self.pj['labels'])
+            self.file_data[indexCheck] = temp_obj
+            print self.file_data
+            # write to disk
 
     def checkifjobexists(self):
-        """ ugly! """
+        """ ugly! return False if not found, index if found """
         job = self.pj['labels']['job']
         alljobs = [i['labels']['job'] for i in self.file_data]
         if job not in alljobs:
@@ -82,10 +92,22 @@ class promfsd:
         return alljobs.index(job)
 
     def removetargets(self):
-        pass
+        # scan through all of the targets in each target object, if target matches, remove target
+        for target in self.pj:
+            for target_obj in self.file_data:
+                if target in target_obj['targets']:
+                    target_obj['targets'].remove(target)
+        print self.file_data
+        # write to disk
 
     def removelabels(self):
-        pass
+        # scan through all of the labels keys in each target object, if label found, remove label
+        for label in self.pj:
+            for target_obj in self.file_data:
+                if label in target_obj['labels'].keys():
+                    target_obj['labels'].pop(label, None)
+        print self.file_data
+        # write to disk
 
     def processfile(self):
         if not (self.rtargets or self.rlabels):
