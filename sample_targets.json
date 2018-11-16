@@ -20,8 +20,8 @@
     }, 
     {
         "labels": {
-            "job": "asas"
+            "job": "node_exporter"
         }, 
-        "targets": []
+        "targets": ["somehostname"]
     }
 ]

@@ -3,13 +3,6 @@ import os
 import json
 
 """
-usage: (currently `$ python main.py` instread of prom-fsd)
-$ prom-fsd ss.json targets=["gitlab0d.fsf.org"] labels={'job': 'mysql', 'category':'xyz'}
-$ prom-fsd ss.json --remove-targets '["gitlab0d.fsf.org"]'
-$ prom-fsd ss.json --remove-labels '{"job":"job1", "category":"cat2"}'
-"""
-
-"""
 Argument parser
 """
 parser = argparse.ArgumentParser(description='Prometheus file service discovery cli tool')
