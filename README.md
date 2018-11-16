@@ -49,7 +49,7 @@ Remove a target
 $ python main.py sample_targets.json --remove-targets '["gitlab0d.fsf.org"]'
 ```
 
-Remove a label from the whole file(all occurences will be removed
+Remove a label from the whole file(all occurences will be removed **It's the label key!**
 ```
-$ python main.py sample_targets.json --remove-labels '["node_exporter"]'
+$ python main.py sample_targets.json --remove-labels '["category"]'
 ```
