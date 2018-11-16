@@ -1,4 +1,5 @@
 import argparse
+import os
 import json
 
 """
@@ -53,6 +54,7 @@ prom-fsd class
 class promfsd:
     """ prom-fsd class """
     def __init__(self, filepath, pj, rtargets, rlabels):
+        self.file_path = filepath
         self.file_data = self.getfiledata(filepath)
         self.pj = pj
         self.rtargets = rtargets
@@ -71,17 +73,14 @@ class promfsd:
             targets_obj['targets'] = self.pj['targets']
             targets_obj['labels'] = self.pj['labels']
             self.file_data.append(targets_obj)
-            print self.file_data
-            # write to disk
+            self.write_to_disk()
         else:
             """ modify old stuff """
-            print 'index is %s' % indexCheck
             temp_obj = self.file_data[indexCheck]
             temp_obj['targets'] = list(set(temp_obj['targets']+self.pj['targets']))
             temp_obj['labels'] = merge_dicts(temp_obj['labels'],self.pj['labels'])
             self.file_data[indexCheck] = temp_obj
-            print self.file_data
-            # write to disk
+            self.write_to_disk()
 
     def checkifjobexists(self):
         """ ugly! return False if not found, index if found """
@@ -97,8 +96,7 @@ class promfsd:
             for target_obj in self.file_data:
                 if target in target_obj['targets']:
                     target_obj['targets'].remove(target)
-        print self.file_data
-        # write to disk
+        self.write_to_disk()
 
     def removelabels(self):
         # scan through all of the labels keys in each target object, if label found, remove label
@@ -106,19 +104,22 @@ class promfsd:
             for target_obj in self.file_data:
                 if label in target_obj['labels'].keys():
                     target_obj['labels'].pop(label, None)
-        print self.file_data
-        # write to disk
+        self.write_to_disk()
 
     def processfile(self):
         if not (self.rtargets or self.rlabels):
-            print "this happened"
             self.addtargets()
         elif self.rtargets:
-            print "remove targets happened"
             self.removetargets()
         elif self.rlabels:
-            print "remove labels happened"
             self.removelabels()
+
+    def write_to_disk(self):
+        with open('%s.new' % self.file_path , 'w') as f:
+            json.dump(self.file_data, f, indent=4)
+            f.flush()
+            os.fsync(f.fileno())
+        os.rename('%s.new' % self.file_path, self.file_path)
 
 if __name__ == '__main__':
     args = parser.parse_args()
