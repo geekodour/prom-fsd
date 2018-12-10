@@ -1,7 +1,7 @@
 # promfilesd-cli
 Add and remove targets and labels to file_sd file for your prometheus configuration directly from the cli
 
-- Should be written in python2 to run by ansible
+> **Note:** written in python2 to run by ansible, one can run this standalone but i use it from the ansible roles from exporter installs. i.e once the exporter is installed, call this script to add itself to file_sd
 
 Content of `./sample_targets.json`
 ```json
